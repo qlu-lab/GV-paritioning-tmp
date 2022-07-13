@@ -2,6 +2,13 @@ library(data.table)
 library(parallel)
 library(MASS)
 
+options(stringsAsFactors=F)
+args = commandArgs(trailingOnly=TRUE)
+
+pheno_y1 = args[1]
+pheno_y2 = args[2]
+
+
 ###
 matrixV = function(GRM,v1_n,N){
     # '''
@@ -305,5 +312,3 @@ calculate = function(K_ind,K_snp,N_grm,M_grm,fn_y1,fn_y2,dout){
     return (data.frame(est_all,var_indjack,var_snpjack))
 }
 
-
-calculate(K_ind,K_snp,N,M,fn_y1,fn_y2,dout)
