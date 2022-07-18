@@ -21,4 +21,4 @@ This can be done using PLINK. If there are enough RAM and storage space in your 
 Run GV-partitioning model.
 
 ### Usage
-Rscript ~./
+Rscript ~./pipeline_GCsibling.r fam_path map_path dosage_path GRM_path
