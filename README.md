@@ -1,4 +1,4 @@
-# GV-paritioning-tmp
+# GV-paritioning
 partitioning heritability and genetic covariance by direct and indirect paths
 
 
