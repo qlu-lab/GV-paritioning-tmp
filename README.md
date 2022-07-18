@@ -14,13 +14,11 @@ An overall fam file is needed to include all participants (including siblings an
 Estimation of all parameters and their variance estimations.
 
 ## Step1
-
-
-### Usage
-
-
+Generate GRM matrices for the whole dataset.
+This can be done using PLINK. If there are enough RAM and storage space in your machine, calculating GRM for each chromosome will save running time in step2.
 
 ## Step 2
+Run GV-partitioning model.
 
 ### Usage
-
+Rscript ~./
