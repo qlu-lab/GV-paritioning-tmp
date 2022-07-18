@@ -22,3 +22,8 @@ Run GV-partitioning model.
 
 ### Usage
 Rscript ~./pipeline_GCsibling.r fam_path map_path dosage_path GRM_path
+
+
+### Citations
+If anyone utilized this pipeline in the paper, please cite
+[our paper]
