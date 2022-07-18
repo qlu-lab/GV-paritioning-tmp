@@ -25,6 +25,6 @@ Rscript ~./pipeline_GCsibling.r [fam_path] [map_path] [dosage_path] [GRM_path]
 
 If parallel system such as condor is available, we highly recommend to run jobs in parallel. This will substatially save time. A parallel version of our codes is in 'parallel' folder in this repository.
 
-### Citations
+## Citations
 If anyone utilized this pipeline in the paper, please cite
 [our paper]
