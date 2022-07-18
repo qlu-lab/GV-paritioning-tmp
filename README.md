@@ -21,7 +21,7 @@ This can be done using PLINK. If there are enough RAM and storage space in your 
 Run GV-partitioning model.
 
 ### Usage
-Rscript ~./pipeline_GCsibling.r fam_path map_path dosage_path GRM_path
+Rscript ~./pipeline_GCsibling.r [fam_path] [map_path] [dosage_path] [GRM_path]
 
 If parallel system such as condor is available, we highly recommend to run jobs in parallel. This will substatially save time. A parallel version of our codes is in 'parallel' folder in this repository.
 
