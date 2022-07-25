@@ -8,7 +8,9 @@ args = commandArgs(trailingOnly=TRUE)
 fn_y1 = args[1]
 fn_y2 = args[2]
 k_ind = as.integer(args[3])
-
+grm_path = args[4]
+grm_id_path = args[5]
+dout = args[6]
 
 ###
 matrixV = function(GRM,v1_n,N){
@@ -150,91 +152,77 @@ matrixB = function(GRM,y1,y2,n_para,N,n_cores){
 }
 
 
-    npara = 14
-    N_grm = 34162
-    M_grm = 4736711
-    numCores <- detectCores()
-    n_cores = floor(numCores/2)
- 
-
-    y1 = as.data.frame(fread(fn_y1)) ## FID, IID, y
-    y2 = as.data.frame(fread(fn_y2))
-
-    ## read GRMs 
-    grm_all = as.matrix(fread('/z/Comp/lu_group/Members/jsong/Sibling/coding/dosage/all_ordered/line1_rmed/chr_all_grm_zs.rel',fill=TRUE,sep='\t')) ## takes a while
+npara = 14
+#     N_grm = 34162
+#     M_grm = 4736711
+numCores <- detectCores()
+n_cores = floor(numCores/2)
 
 
-    ## read ind lists
-    ## individual order in GRM file
-    # fam.f = as.data.frame(fread('/z/Comp/lu_group/Members/jsong/Sibling/coding/dosage/all_ordered/par_all.fam'))
-    grm_id = as.data.frame(fread('/z/Comp/lu_group/Members/jsong/Sibling/coding/dosage/all_ordered/line1_rmed/chr_all_grm_zs.rel.id'))
-    colnames(grm_id)[1]='FID'
-    grm_sib_id = grm_id[1:N_grm,]
-    ## cleaning phenotypes
-    pheno_complete = complete.cases(cbind(y1[,3],y2[,3]))
-    y_all = cbind(y1[pheno_complete,3],y2[pheno_complete,3])
-    y_all_id = y1[pheno_complete,2] #IID
+y1 = as.data.frame(fread(fn_y1)) ## FID, IID, y
+y2 = as.data.frame(fread(fn_y2))
 
-    grm_id_left = grm_sib_id[grm_sib_id$IID %in% y_all_id,]
-    ta = table(grm_id_left$FID)
-    count = attr(ta, "dimnames")[[1]][ta==2]
-    grm_id_left_families = grm_id_left[grm_id_left$FID %in% count,]
-    
-
-    N = dim(grm_id_left_families)[1]
-    blocks_IID = grm_id_left_families[order(grm_id_left_families$FID),'IID'] ## reorder
-    index = match(blocks_IID,grm_id$IID)
-    index2 = c(index,index+N_grm)
-    grm_all = grm_all[index2,index2]
-    grm_id = grm_id[index,]
+## read GRMs 
+grm_all = as.matrix(fread(grm_path,fill=TRUE,sep='\t')) ## takes a while
+N_grm = dim(grm_all)[1]/2
 
 
-    y_all = y_all[match(blocks_IID,y_all_id),]
-    y_all_id = y_all_id[match(blocks_IID,y_all_id)]
+## read ind lists
+grm_id = as.data.frame(fread(grm_id_path))
+colnames(grm_id)[1]='FID'
+grm_sib_id = grm_id[1:N_grm,]
+## cleaning phenotypes
+pheno_complete = complete.cases(cbind(y1[,3],y2[,3]))
+y_all = cbind(y1[pheno_complete,3],y2[pheno_complete,3])
+y_all_id = y1[pheno_complete,2] #IID
+
+grm_id_left = grm_sib_id[grm_sib_id$IID %in% y_all_id,]
+ta = table(grm_id_left$FID)
+count = attr(ta, "dimnames")[[1]][ta==2]
+grm_id_left_families = grm_id_left[grm_id_left$FID %in% count,]
 
 
-    ## Point est for the whole dataset
-    # y1_std = (y_all[,1]-mean(y_all[,1]))/sd(y_all[,1])
-    # y2_std = (y_all[,2]-mean(y_all[,2]))/sd(y_all[,2])
-    # A = matrixA(npara,grm_all,N,n_cores) 
-    # B = matrixB(grm_all,y1_std,y2_std,npara,N,n_cores)
-    # est_all = solve(A,B)
-  
-    ## Ind Jackknife
-    # partition indlist into different blocks
-    # note: every individual have two IDs: family ID, i.e. FID, and individual ID, i.e. IID. Each family has two siblings, so that means there will be two individuals that share the same FID. We want to split samples based on FID, so the siblings in the same family will be partitioned into the same block. And, we want to organize the dataset in the way that two siblings are continent in the dataset. So the rows of the data will be like: sib1_fam1, sib2_fam1, sib1_fam2, sib2_fam2, sib1_fam3, sib2_fam3,...
-    set.seed(1)
-    spliting = sample(K_ind,length(unique(grm_id_left_families$FID)),replace=T)
-    # est_indblock = matrix(0,K_ind,npara)
-    
-    # K_ind_list= c(1:K_ind)
-    # est_indblock = mcmapply(k_ind=K_ind_list,function(row){
-      
-      blocks_FID = unique(grm_id_left_families$FID)[spliting==k_ind]
-      blocks_tmp = grm_id[grm_id$FID %in% blocks_FID,]
-      blocks_IID = blocks_tmp[order(blocks_tmp$FID),'IID'] ## reorder
-      N_indblock = length(blocks_IID)
-      index = match(blocks_IID,grm_id$IID)
-      index_grm = c(index,index+N)
-      grm_indblock = grm_all[-index_grm, -index_grm]
-      A_indblock = matrixA(npara,grm_indblock,N-N_indblock,n_cores)
-
-      index_y = match(blocks_IID,y_all_id)
-      y1_block = y_all[-index_y,1]
-      y1_block_std = (y1_block-mean(y1_block))/sd(y1_block)
-      y2_block = y_all[-index_y,2]
-      y2_block_std = (y2_block-mean(y2_block))/sd(y2_block)
-    #   y_indblock = c(y1[-index],y2[-index])
-      B_indblock = matrixB(grm_indblock,y1_block_std,y2_block_std,npara,N-N_indblock,n_cores)
-      est_indblock = solve(A_indblock,B_indblock)
+N = dim(grm_id_left_families)[1]
+blocks_IID = grm_id_left_families[order(grm_id_left_families$FID),'IID'] ## reorder
+index = match(blocks_IID,grm_id$IID)
+index2 = c(index,index+N_grm)
+grm_all = grm_all[index2,index2]
+grm_id = grm_id[index,]
 
 
-    dout = paste0('/z/Comp/lu_group/Members/jsong/Sibling/coding/UKB/2.indjack/',pheno_y1,'_',pheno_y2)
-    if(!dir.exists(dout)){
-        dir.create(file.path(dout))
-    }
-    setwd(dout)
-    write.table(A_indblock,paste0('A_',k_ind,'.txt'),quote=F,row.names=F,col.names=F,sep='\t')
-    write.table(B_indblock,paste0('B_',k_ind,'.txt'),quote=F,row.names=F,col.names=F,sep='\t')
-    write.table(est_indblock,paste0('est_',k_ind,'.txt'),quote=F,row.names=F,col.names=F,sep='\t')
+y_all = y_all[match(blocks_IID,y_all_id),]
+y_all_id = y_all_id[match(blocks_IID,y_all_id)]
+
+## Ind Jackknife
+# partition indlist into different blocks
+# note: every individual have two IDs: family ID, i.e. FID, and individual ID, i.e. IID. Each family has two siblings, so that means there will be two individuals that share the same FID. We want to split samples based on FID, so the siblings in the same family will be partitioned into the same block. And, we want to organize the dataset in the way that two siblings are continent in the dataset. So the rows of the data will be like: sib1_fam1, sib2_fam1, sib1_fam2, sib2_fam2, sib1_fam3, sib2_fam3,...
+set.seed(1)
+spliting = sample(K_ind,length(unique(grm_id_left_families$FID)),replace=T)
+
+blocks_FID = unique(grm_id_left_families$FID)[spliting==k_ind]
+blocks_tmp = grm_id[grm_id$FID %in% blocks_FID,]
+blocks_IID = blocks_tmp[order(blocks_tmp$FID),'IID'] ## reorder
+N_indblock = length(blocks_IID)
+index = match(blocks_IID,grm_id$IID)
+index_grm = c(index,index+N)
+grm_indblock = grm_all[-index_grm, -index_grm]
+A_indblock = matrixA(npara,grm_indblock,N-N_indblock,n_cores)
+
+index_y = match(blocks_IID,y_all_id)
+y1_block = y_all[-index_y,1]
+y1_block_std = (y1_block-mean(y1_block))/sd(y1_block)
+y2_block = y_all[-index_y,2]
+y2_block_std = (y2_block-mean(y2_block))/sd(y2_block)
+B_indblock = matrixB(grm_indblock,y1_block_std,y2_block_std,npara,N-N_indblock,n_cores)
+est_indblock = solve(A_indblock,B_indblock)
+
+
+dout2 = paste0(dout,'/2.indjack/')
+if(!dir.exists(dout2)){
+dir.create(file.path(dout2))
+}
+setwd(dout2)
+write.table(A_indblock,paste0('A_ind_',k_ind,'.txt'),quote=F,row.names=F,col.names=F,sep='\t')
+write.table(B_indblock,paste0('B_ind_',k_ind,'.txt'),quote=F,row.names=F,col.names=F,sep='\t')
+write.table(est_indblock,paste0('est_ind_',k_ind,'.txt'),quote=F,row.names=F,col.names=F,sep='\t')
   
