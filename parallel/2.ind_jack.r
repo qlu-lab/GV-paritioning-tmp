@@ -7,10 +7,11 @@ args = commandArgs(trailingOnly=TRUE)
 
 fn_y1 = args[1]
 fn_y2 = args[2]
-k_ind = as.integer(args[3])
-grm_path = args[4]
-grm_id_path = args[5]
-dout = args[6]
+K_ind = as.integer(args[3])
+k_ind = as.integer(args[4])
+grm_path = args[5]
+grm_id_path = args[6]
+dout = args[7]
 
 ###
 matrixV = function(GRM,v1_n,N){
