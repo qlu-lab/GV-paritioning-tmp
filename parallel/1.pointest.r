@@ -197,7 +197,7 @@ B = matrixB(grm_all,y1_std,y2_std,npara,N,n_cores)
 est_all = solve(A,B)
 
 setwd(dout)
-write.table(A,paste0(pheno_y1,'_',pheno_y2,'_A.txt'),quote=F,row.names=F,col.names=F,sep='\t')
-write.table(B,paste0(pheno_y1,'_',pheno_y2,'_B.txt'),quote=F,row.names=F,col.names=F,sep='\t')
-write.table(est_all,paste0(pheno_y1,'_',pheno_y2,'_est_all.txt'),quote=F,row.names=F,col.names=F,sep='\t')
+write.table(A,paste0(dout, 'A.txt'),quote=F,row.names=F,col.names=F,sep='\t')
+write.table(B,paste0(dout, 'B.txt'),quote=F,row.names=F,col.names=F,sep='\t')
+write.table(est_all,paste0(dout, 'est_all.txt'),quote=F,row.names=F,col.names=F,sep='\t')
  
