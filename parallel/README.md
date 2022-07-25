@@ -7,6 +7,10 @@ Input: GRM file
 Output: point estimates for the whole dataset
 
 Usage: 
+```{r}
+Rscript 1_pointest.r [pheno_y1] [pheno_y2] [grm_path] [grm_id_path] [dout] 
+```
+
 
 ## Step 2 - individual-level jackknife
 
