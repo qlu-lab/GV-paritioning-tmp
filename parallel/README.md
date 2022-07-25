@@ -32,7 +32,7 @@ Output: variance of snp-jackknife for all parameters
 Usage:
 
 ```{r}
-Rscript 3_snpjack.r [pheno_y1] [pheno_y2] [CHR] [snpblock] [k_snp] 
+Rscript 3_snpjack.r [path to phenotype 1] [path to phenotype 2] [CHR] [snpblock] [k_snp] [grm_path] [grm_id_path] [dout] [fam_f][map_path] [dosage_path] [plink_path]
 ```
 where 
 
@@ -45,3 +45,7 @@ CHR: chromosome number {1...22}
 snpblock: ith block for chromosome CHR
 
 k_snp: jth block for all blocks
+
+
+
+
