@@ -12,12 +12,6 @@ k_ind = as.integer(args[3])
 
 ###
 matrixV = function(GRM,v1_n,N){
-    # '''
-    # generate V based on GRM and individual blocks & snp blocks
-    # Vs are symmetric matrices
-    # GRM: 2N*2N
-    # return: dictionary (or other data structure) that contains 14 Vs, each of dimension 2N*2N (N = the number of siblings)
-    # '''
     V = list()
     V[[1]] = 0; V[[2]] = 0; V[[3]] = 0; V[[4]] = 0
     if (v1_n==1) {
@@ -80,16 +74,9 @@ matrixV = function(GRM,v1_n,N){
 
 
 traceAB = function(V1,V2,n_cores=1){
-    # '''
-    # A and B are both blockwise matrices with four blocks like [[A1,A2],[A3,A4]]
-    # trace(AB) = trace(A1B1+A2B3+A3B2+A4B4)
-    # V1,V2 contains GRM index for each block submatrix
-    # '''
-  
     i_v <- c(1,2,3,4)
     j_v <- c(1,3,2,4)
     
-    # result = mcmapply(i=i_v,j=j_v,function(i,j){
     result = c()
     for(k in 1:4){
       i=i_v[k]
@@ -108,23 +95,13 @@ traceAB = function(V1,V2,n_cores=1){
 
 
 matrixA = function(n_para,GRM,N,n_cores){
-    # about 21 min for one matrix A
-    # '''
-    # matrixA is symmetric matrix, so just need to calculate lower triangle
-    # grm : grm matrix
-    # n_para : number of parameters
-    # '''
     v1 = c(1,1,1,1,2,2,2,3,3,12,4,4,4,4,4,4,5,5,5,5,5,6,6,6,6,7,7,7,11,11,14)
     v2 = c(1,2,3,12,2,3,12,3,12,12,4,5,6,7,11,14,5,6,7,11,14,6,7,11,14,7,11,14,11,14,14)
     A = matrix(0,n_para,n_para)
     for (row in 1:length(v1)){
-        a=Sys.time()
         V1 = matrixV(GRM,v1[row],N)
         V2 = matrixV(GRM,v2[row],N)
         A[v1[row],v2[row]] = traceAB(V1,V2,n_cores) 
-        print(Sys.time()-a)
-        #    user  system elapsed 
-        # 28.914  10.293  40.120 
     }
     A[8,8] = A[1,1]
     A[9,9] = A[2,2]
@@ -142,12 +119,8 @@ matrixA = function(n_para,GRM,N,n_cores){
 }
 
 matrixB = function(GRM,y1,y2,n_para,N,n_cores){
-    # '''
-    # matrix B = yVy-trace(V)
-    # '''
     A = matrix(0,n_para,1)
     rowlist= c(1:n_para)
-    # B = mcmapply(row=rowlist,function(row){
     B = c()
     for(row in 1:n_para){
         print(row)
@@ -177,42 +150,13 @@ matrixB = function(GRM,y1,y2,n_para,N,n_cores){
 }
 
 
-# calculate = function(K_ind,K_snp,N_grm,M_grm,fn_y1,fn_y2,dout){
-    # """
-    # N: number of siblings
-    # M: number of SNPs
-    # K_ind: number of individual blocks
-    # K_snp: number of SNP blocks
-    # """
-
-    ## number of parameters = 14
     npara = 14
     N_grm = 34162
     M_grm = 4736711
     numCores <- detectCores()
     n_cores = floor(numCores/2)
-    ## number of individual blocks
-    K_ind = 200
-    ## number of snp blocks
-    # K_snp = 900
+ 
 
-    ## read phenotypes
-    # dpheno = '/z/Comp/lu_group/Members/jsong/Minorjobs/clarazou/SiblingGC/5000_mom/sibling_phenotype'
-    # id_sub = '/z/Comp/lu_group/Members/jsong/Sibling/UKB/Traits/jackknife_snp/codes/indlist.txt'
-    # id = '/z/Comp/lu_group/Members/jsong/Sibling/fid_2sib.txt'
-
-    # fn = c('phenotype_Height.txt','phenotype_BMI.txt','phenotype_HouseholdIncome.txt','phenotype_EduYears.txt','phenotype_OverallHealth.txt')
-    # n = c(34104,34077,29501,33886,34048)
-    # h = read.table('phenotype_OverallHealth.txt')
-    # summary(h)
-    # sum(!is.na(h))
-    # h=cbind(id,h)
-    # h[h[,3]<0,3]=NA
-    # write.table(h,paste0(dout,'OverallHealth.txt'),quote=F,row.names=F,col.names=F,sep='\t')
-
-
-    fn_y1 = paste0('/z/Comp/lu_group/Members/jsong/Sibling/coding/UKB/phenotypes/',pheno_y1,'.txt')
-    fn_y2 = paste0('/z/Comp/lu_group/Members/jsong/Sibling/coding/UKB/phenotypes/',pheno_y2,'.txt')
     y1 = as.data.frame(fread(fn_y1)) ## FID, IID, y
     y2 = as.data.frame(fread(fn_y2))
 
@@ -294,90 +238,3 @@ matrixB = function(GRM,y1,y2,n_para,N,n_cores){
     write.table(B_indblock,paste0('B_',k_ind,'.txt'),quote=F,row.names=F,col.names=F,sep='\t')
     write.table(est_indblock,paste0('est_',k_ind,'.txt'),quote=F,row.names=F,col.names=F,sep='\t')
   
-    # },mc.cores=n_cores)
-    
-    # var_indjack = sum((est_indblock-rowMeans(est_indblock))^2)*(K_ind-1)/K_ind
-
-
-    # ## SNP Jackknife
-    # fam.f = '/z/Comp/lu_group/Members/jsong/Sibling/coding/dosage/all_ordered/par_all.fam'
-    # map.f = '/z/Comp/lu_group/Members/jsong/Sibling/coding/dosage/all_ordered/line1_rmed/block1.map'
-    # dosage.f = '/z/Comp/lu_group/Members/jsong/Sibling/coding/dosage/all_ordered/line1_rmed/chr1.dosage.gz'
-    # dout = '/z/Comp/lu_group/Members/jsong/Sibling/coding/dosage/all_ordered/line1_rmed'
-
-    # est_snpblock = matrix(0,K_snp,npara)
-    
-    # K_snp_list= c(1:K_snp)
-    # est_indblock = mcmapply(k_snp=K_snp_list,function(row){
-      
-    #   blocks_snp = blocks_snp_all[k_snp]
-    #   map.f = paste0(dout,'/map/block',k_snp,'.map') ## pre-written
-    #   ## call PLINK
-    #   m_block = dim(read.table(map.f))[1]
-    #   command = paste0('/z/Comp/lu_group/Software/plink/plink2_linux_x86_64_20190708/plink2 --fam ',fam.f,' --map ',map.f,' --import-dosage ',dosage.f,' noheader --make-rel square --out ',dout,'/blockgrm/grm_block',k_snp)
-    #   system(command)
-    #   ## read block GRM 
-    #   grm_snpblock = as.matrix(fread(paste0(dout,'/blockgrm/grm_block',k_snp,'.rel'))) 
-    #   grm_snpblock = (grm_all*M_grm-grm_snpblock*m_block)/(M_grm-m_block)
-    #   system(paste0('rm ',dout,'/blockgrm/grm_block',k_snp,'.rel'))
-    #   A_snpblock = matrixA(npara,grm_snpblock,N,n_cores)
-    #   y = np.concatenate((y1,y2))
-    #   B_snpblock = matrixB( grm_snpblock,y,npara,N,n_cores)
-    #   solve(A_snpblock,B_snpblock)
-      
-    # },mc.cores=n_cores)
-
-    # var_snpjack = sum((est_snpblock-rowMeans(est_snpblock))^2)*(K_snp-1)/K_snp
-
-    ## final output
-    # return (data.frame(est_all,var_indjack,var_snpjack))
-# }
-
-
-# calculate(K_ind,K_snp,N,M,fn_y1,fn_y2,dout)
-
-
-# dout = '/z/Comp/lu_group/Members/jsong/Sibling/coding/UKB/2.indjack'
-# # dout = paste0('/z/Comp/lu_group/Members/jsong/Sibling/coding/UKB/2.indjack/',pheno_y1,'_',pheno_y2)
-# dsh = paste0(dout,'/sh/')
-# if(!dir.exists(dsh)){
-#         dir.create(file.path(dsh))
-# }
-# setwd(dsh)
-
-# id = c('height','bmi','OverallHealth','EA','income')
-
-# for(i in 1:4){
-#     for(j in (i+1):5){
-#         dsh_ij = paste0(dsh,id[i],'_',id[j],'/')
-#         if(!dir.exists(dsh_ij)){
-#                 dir.create(file.path(dsh_ij))
-#         }
-#         for(k in 1:200){
-#             pipeline_d = c('#!/bin/bash\n',paste0('/s/bin/Rscript /z/Comp/lu_group/Members/jsong/Sibling/coding/UKB/2.ind_jack.r ',id[i],' ',id[j],' ',k))
-#             write.table(pipeline_d,paste0(dsh_ij,k,".sh"),row.names=F, col.names=F, quote=F, sep="\n")
-#         }
-
-#         t = paste0(dsh_ij, "condor_submit_settings.sh")
-
-#         write("Universe = vanilla", file = t)
-#         # cat("Environment = PYSPARK_SUBMIT_ARGS=\"\"--driver-memory 8g pyspark-shell\"\"\n", file = t, append = T)
-#         cat("plusone = $(Process) + 1\n", file = t, append = T)
-#         cat("NewProcess = $INT(plusone)\n", file = t, append = T)
-#         cat("executable = $(NewProcess).sh\n", file = t, append = T)
-#         cat("Request_memory = 120G\n", file = t, append = T)
-#         cat("Request_cpus = 1\n", file = t, append = T)
-#         cat("Output = simple$(NewProcess).out\n", file = t, append = T)
-#         cat("Log = simple$(NewProcess).log\n", file = t, append = T)
-#         cat("error = simple$(NewProcess).error\n", file = t, append = T)
-#         cat("on_exit_hold = (ExitBySignal == True) || (ExitCode != 0)\n", file = t, append = T)
-#         cat("periodic_release = (NumJobStarts < 10) && ((CurrentTime - EnteredCurrentStatus) > 300)\n", file = t, append = T)
-#         cat("Queue", 200, "\n", file = t, append = T)
-
-#         # make .sh files executable:
-#         system(paste0("chmod a+x ", dsh_ij, "*.sh"))
-#         setwd(dsh_ij)
-#         system(paste0('condor_submit ',"condor_submit_settings.sh"))
-#     }
-# }
-
