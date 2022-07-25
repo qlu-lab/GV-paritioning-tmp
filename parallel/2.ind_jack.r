@@ -5,8 +5,8 @@ library(MASS)
 options(stringsAsFactors=F)
 args = commandArgs(trailingOnly=TRUE)
 
-pheno_y1 = args[1]
-pheno_y2 = args[2]
+fn_y1 = args[1]
+fn_y2 = args[2]
 k_ind = as.integer(args[3])
 
 
