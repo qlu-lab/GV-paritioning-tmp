@@ -219,7 +219,7 @@ if(!dir.exists(dsh_ij)){
 grmblock.f = paste0(dsh_ij,'chr',CHR,'_block',snpblock)
 ## call PLINK
 m_block = dim(read.table(map.f,header=F))[1]
-command = paste0(plink_path,' --fam ',fam.f,' --map ',map.f,' --import-dosage ',dosage.f,' noheader --make-rel square --out ',grmblock.f)
+command = paste0(plink_path,' --fam ',fam_f,' --map ',map.f,' --import-dosage ',dosage.f,' noheader --make-rel square --out ',grmblock.f)
 system(command)
 ## read block GRM 
 grm_snpblock = as.matrix(fread(paste0(grmblock.f,'.rel'))) 
