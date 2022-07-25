@@ -20,7 +20,7 @@ Estimation of all parameters and their variance estimations.
 
 ## Step1
 Generate GRM matrices for the whole dataset.
-This can be done using PLINK. If there are enough RAM and storage space in your machine, calculating GRM for each chromosome will save running time in step2.
+This can be done using PLINK2.0 (https://www.cog-genomics.org/plink/2.0/input#dosage_import_settings). If there are enough RAM and storage space in your machine, calculating GRM for each chromosome will save running time in step2.
 
 ## Step 2
 Run GV-partitioning model.
@@ -31,6 +31,8 @@ Rscript ~./pipeline_GCsibling.r [fn_y1] [fn_y2] [grm_rel] [grm_rel.id] [fam file
 ```
 
 If parallel system such as condor is available, we highly recommend to run jobs in parallel. This will substatially save time. A parallel version of our codes is in 'parallel' folder in this repository.
+
+An example is available in 'example' folder.
 
 ## Citations
 If anyone utilized this pipeline in the paper, please cite
