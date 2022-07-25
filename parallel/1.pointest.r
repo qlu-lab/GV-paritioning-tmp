@@ -151,8 +151,8 @@ matrixB = function(GRM,y1,y2,n_para,N,n_cores){
 
 
 npara = 14
-N_grm = 34162
-M_grm = 4736711
+# N_grm = 34162
+# M_grm = 4736711
 numCores <- detectCores()
 n_cores = floor(numCores/2)
 
@@ -162,6 +162,7 @@ y2 = as.data.frame(fread(fn_y2))
 
 ## read GRMs 
 grm_all = as.matrix(fread(grm_path,fill=TRUE,sep='\t')) ## takes a while
+N_grm = dim(grm_all)[1]/2
 
 
 ## read ind lists
