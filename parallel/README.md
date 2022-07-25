@@ -8,7 +8,7 @@ Output: point estimates for the whole dataset
 
 Usage: 
 ```{r}
-Rscript 1_pointest.r [pheno_y1] [pheno_y2] [grm_path] [grm_id_path] [dout] 
+Rscript 1_pointest.r [path to phenotype 1] [path to phenotype 2] [grm_path] [grm_id_path] [dout] 
 ```
 
 
@@ -20,10 +20,8 @@ Output: variance of ind-jackknife for all parameters
 
 Usage:
 ```{r}
-Rscript 2_indjack.r [pheno_y1] [pheno_y2] [CHR] [snpblock] [k_snp] 
+Rscript 2_indjack.r [path to phenotype 1] [path to phenotype 2] [total number of blocks] [ith block] [grm_path] [grm_id_path] [dout]
 ```
-
-
 
 ## Step 3 - snp-level jackknife
 
