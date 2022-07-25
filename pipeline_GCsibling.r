@@ -19,18 +19,20 @@ map_path = args[6]
 dosage_path = args[7]
 dout = args[8]
 plink_path = args[9]
+M_grm = as.integer(args[10])
+K_ind = as.integer(args[11])
 
 calculate = function(fn_y1,
                      fn_y2,
                      chr_all_grm_zs.rel,
                      chr_all_grm_zs.rel.id,
-                     fam_path,
+                     fam_f,
                      map_path,
                      dosage_path,
                      dout,
                      plink_path,
-                     K_ind = 200,
-                     M_grm) {
+                     M_grm,
+                     K_ind) {
   # """
   # fn_y1: phenotype_y1 path 
   # fn_y2: phenotype_y2 path 
@@ -60,7 +62,7 @@ calculate = function(fn_y1,
   grm_all = as.matrix(fread(chr_all_grm_zs.rel, fill = TRUE, sep = '\t'))
   grm_id = as.data.frame(fread(chr_all_grm_zs.rel.id))
   colnames(grm_id)[1] = 'FID'
-  N_grm = dim(grm.all)[1]/2
+  N_grm = dim(grm_all)[1]/2
   grm_sib_id = grm_id[1:N_grm,]
 
   ## cleaning phenotypes
@@ -97,7 +99,9 @@ calculate = function(fn_y1,
   est_indblock = matrix(0, K_ind, npara)
   
   K_ind_list = c(1:K_ind)
-  est_indblock = mcmapply(k_ind = K_ind_list, function(row) {
+  # est_indblock = mcmapply(k_ind = K_ind_list, function(row) {
+  for(k_ind in K_ind_list){
+    print(paste0('ind_iter_',k_ind))
     blocks_FID = unique(grm_id_left_families$FID)[spliting == k_ind]
     blocks_tmp = grm_id[grm_id$FID %in% blocks_FID,]
     blocks_IID = blocks_tmp[order(blocks_tmp$FID), 'IID'] ## reorder
@@ -118,28 +122,28 @@ calculate = function(fn_y1,
                          npara,
                          N - N_indblock,
                          n_cores)
-    solve(A_indblock, B_indblock)
-    
-  }, mc.cores = n_cores)
+    est_indblock[k_ind,] = solve(A_indblock, B_indblock)
+  }
+  # }, mc.cores = 2)
   
-  var_indjack = sum((est_indblock - rowMeans(est_indblock)) ^ 2) * (K_ind - 1) / K_ind
+  var_indjack = apply(est_indblock,2,function(x) sum((x - mean(x)) ^ 2) * (K_ind -1) / K_ind)
   
   
   ## SNP Jackknife
-  
-  est_snpblock = matrix(0, K_snp, npara)
-  
-  # K_snp_list= c(1:K_snp)
-  mapfiles = list.files(path = map_path)
+ 
+  mapfiles = list.files(path = map_path,pattern = '.*.map')
   K_snp = length(mapfiles)
-  est_indblock = mcmapply(k_snp = 1:K_snp, function(row) {
-    kth_block = mapfiles[row]
+  est_snpblock = matrix(0, K_snp, npara)
+  # est_indblock = mcmapply(k_snp = 1:K_snp, function(row) {
+  for(k_snp in 1:K_snp){
+    print(paste0('snp_iter_',k_snp))
+    kth_block = mapfiles[k_snp]
     CHR = gsub('chr(\\d+)_block.*','\\1',kth_block )
     snpblock = gsub('chr(\\d+)_block(\\d+).map','\\2',kth_block )
 
-    map.f = mapfiles[row]
+    map.f = mapfiles[k_snp]
     dosage.f = paste0(dosage_path , '/chr',CHR, '.dosage.gz')
-    dsh_ij = paste0(dout, '/blockgrm/', pheno_y1, '_', pheno_y2, '/')
+    dsh_ij = paste0(dout, '/blockgrm/')
     if (!dir.exists(dsh_ij)) {
       dir.create(file.path(dsh_ij))
     }
@@ -149,7 +153,7 @@ calculate = function(fn_y1,
     command = paste0(
       plink_path,
       ' --fam ',
-      fam.f,
+      fam_f,
       ' --map ',
       map.f,
       ' --import-dosage ',
@@ -165,12 +169,29 @@ calculate = function(fn_y1,
     system(paste0('rm ', grmblock.f, '.rel'))
     A_snpblock = matrixA(npara, grm_snpblock, N, n_cores)
     B_snpblock = matrixB(grm_snpblock, y1_std, y2_std, npara, N, n_cores)
-    solve(A_snpblock, B_snpblock)
-    
-  }, mc.cores = n_cores)
+    est_snpblock[k_snp,] = solve(A_snpblock, B_snpblock)
+  }
+  # }, mc.cores = n_cores)
   
-  var_snpjack = sum((est_snpblock - rowMeans(est_snpblock)) ^ 2) * (K_snp -1) / K_snp
+  var_snpjack = apply(est_snpblock,2,function(x) sum((x - mean(x)) ^ 2) * (K_snp -1) / K_snp)
   
   ## final output
-  return (data.frame(est_all, var_indjack, var_snpjack))
+  var_final = var_snpjack 
+  var_final[c(3,6,7,10)] = var_indjack[c(3,6,7,10)]
+  p = 2*pnorm(abs(est_all/sqrt(var_final)),lower.tail=F)
+  output_final = data.frame(est = est_all, sd = sqrt(var_final),p.value=p)
+  write.table(output_final,paste0(dout,'/results.txt'),quote=F,col.names=T,row.names=F,sep='\t')
+  return (output_final)
 }
+
+calculate(fn_y1,
+          fn_y2,
+          chr_all_grm_zs.rel,
+          chr_all_grm_zs.rel.id,
+          fam_f,
+          map_path,
+          dosage_path,
+          dout,
+          plink_path,
+          M_grm,
+          K_ind)
