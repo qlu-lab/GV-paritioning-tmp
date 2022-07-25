@@ -3,8 +3,10 @@ matrixA = function(n_para, GRM, N, n_cores) {
   # '''
   # matrix on the left hand side of linear system to solve
   # matrixA is symmetric matrix, so just need to calculate lower triangle
-  # GRM : 2N-by-2N GRM matrix 
   # n_para : number of parameters to estimate
+  # GRM : 2N-by-2N GRM matrix 
+  # N : dimension of matrix
+  # n_cores: cores used for processing
   # '''
   v1 = c(1,
          1,
