@@ -4,6 +4,10 @@ matrixB = function(GRM, y1, y2, n_para, N, n_cores) {
   # '''
   # matrix on the right hand side of linear system
   # matrix B = yVy-trace(V)
+  # GRM : 2N-by-2N GRM matrix 
+  # n_para : number of parameters to estimate
+  # N : dimension of matrix
+  # n_cores: cores used for processing
   # '''
   A = matrix(0, n_para, 1)
   rowlist = c(1:n_para)
