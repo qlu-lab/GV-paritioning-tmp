@@ -2,7 +2,9 @@ matrixV = function(GRM, v1_n, N) {
   # '''
   # generate (v1_n)th matrix V based on GRM 
   # Vs are symmetric matrices
-  # GRM: 2N*2N
+  # GRM : 2N*2N
+  # v1_n : index of wanted matrix
+  # N : dimension of matrix
   # return: list that contains four blocks for (v1_n)th matrix V, each block is either 0, or a N-by-N matrix
   # '''
   V = list()
