@@ -1,5 +1,6 @@
-# GV-paritioning
-Partitioning heritability and genetic covariance by direct and indirect paths
+# GV-paritioning: Partitioning heritability and genetic covariance by direct and indirect paths
+
+## Introduction
 
 ### Prepare following files
 
