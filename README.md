@@ -1,6 +1,8 @@
-# GV-paritioning: Partitioning heritability and genetic covariance by direct and indirect paths
+# GV-paritioning: partitioning heritability and genetic covariance by direct and indirect paths
 
 ## Introduction
+
+GV-paritioning is a statistical framework to estimate the variance and covariance components of direct/indirect genetic effects on two traits using data from a limited number of families.
 
 ### Prepare following files
 
