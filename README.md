@@ -60,7 +60,7 @@ One file for each phenotype. Columns need to include FID, IID, phenotype values.
 ### Output
 Estimation of all parameters and their variance estimations.
 
-## GV-paritioning
+## PARSEC
 There are two steps to conduct the GV-paritioning analysis:
 
 ### Step 1
