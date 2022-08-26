@@ -4,6 +4,13 @@
 
 GV-paritioning is a statistical framework to estimate the variance and covariance components of direct/indirect genetic effects on two traits using data from a limited number of families.
 
+## Prerequisites
+
+The software is developed using R and tested in Linux environments. The statistical computing software R (>=3.5.1) and the following R packages are required:
+
+* [data.table](https://cran.r-project.org/web/packages/data.table/index.html) (>=1.11.8)
+* [parallel](https://stat.ethz.ch/R-manual/R-devel/library/parallel/doc/parallel.pdf) (>=3.5.1)
+
 ### Prepare following files
 
 1. Dosage files for sibling genotypes and parental genotypes\
