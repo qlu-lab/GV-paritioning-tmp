@@ -93,12 +93,24 @@ where the inputs are
 | n_snp        | Total number of SNPs in GRM |
 | n_ind        | number of ind blocks |
 
+#### Explanation of Output
+
+The final result has the following fields:
+
+| Column | Description |
+|-----|-------------|
+| col1 | discript1 |
+| col2 | discript2 |
 
 
 If parallel system such as condor is available, we highly recommend to run jobs in parallel. This will substatially save time. A parallel version of our codes is in 'parallel' folder in this repository.
 
 An example is available in 'example' folder.
 
-## Citations
+## Citation
 If anyone utilized this pipeline in the paper, please cite
 [our paper]
+
+## License
+
+All rights reserved for [Lu-Laboratory](http://qlu-lab.org/)
