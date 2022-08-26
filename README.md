@@ -74,8 +74,26 @@ Run GV-partitioning model.
 
 
 ```{r}
-Rscript ~./pipeline_GCsibling.r [fn_y1] [fn_y2] [grm_rel] [grm_rel.id] [fam file path] [map file directory] [dosage file directory] [output directory] [plink software path] [Total number of SNPs in GRM] [number of ind blocks]
+Rscript ~./pipeline_GCsibling.r [fn_y1] [fn_y2] [grm_rel] [grm_rel.id] [fam_path] [map_path] [dosage_path] [output_path] [plink_path] [n_snp] [n_ind]
 ```
+
+where the inputs are
+
+| Flag | Description |
+|-----|------------------------------------------------------------------------|
+| fn_y1      | pheno of y1 |
+| fn_y2         | pheno of y2 |
+| grm_rel        | The path to the reference of GRM |                                                    
+| grm_rel.id     | The path to the reference id of GRM |
+| fam_path        | The path to the fam file |
+| map_path        | The path to the map file |
+| dosage_path        | The path to the dosage file |
+| output_path        | The path to the output |
+| plink_path        | The path to the PLINK software |
+| n_snp        | Total number of SNPs in GRM |
+| n_ind        | number of ind blocks |
+
+
 
 If parallel system such as condor is available, we highly recommend to run jobs in parallel. This will substatially save time. A parallel version of our codes is in 'parallel' folder in this repository.
 
