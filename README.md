@@ -21,18 +21,22 @@ $ git clone https://github.com/qlu-lab/GV-paritioning
 $ cd ./GV-paritioning
 ```
 
-### Prepare following files
+## Input Data Format
+### Dosage files for sibling genotypes and parental genotypes
 
-1. Dosage files for sibling genotypes and parental genotypes\
-The format follows PLINK dosage files, including columns of rs number, allele 1, allele 2, and dosages for each individual. Do not need to add column names. In our implementation, we are using a single dosage for each individual. Sibling dosages and parental dosages should be stacked into one dosage file. Chromosomes seperated dosage files are preferred. The file names of dosage files are in the form "chr{1...22}.dosage.gz".
+The format follows PLINK dosage files, including columns of rs number, allele 1, allele 2, and dosages for each individual. Do not need to add column names. In our implementation, we are using a single dosage for each individual. Sibling dosages and parental dosages should be stacked into one dosage file. Chromosomes seperated dosage files are preferred. The file names of dosage files are in the form "chr{1...22}.dosage.gz".:
 
-2. Map files\
-Map files are used to perform SNP-level jackknife analysis. Format follows PLINK .map files. Every block corresponds to one map file. The set of map files used in our paper is available in our repository. The file names of .map files are in the form "chr{1...22}\_block{1,...}.map".
 
-3. Overall .fam file\
+### Map files
+
+Map files are used to perform SNP-level jackknife analysis. Format follows PLINK .map files. Every block corresponds to one map file. The set of map files used in our paper is available in our repository. The file names of .map files are in the form "chr{1...22}\_block{1,...}.map".:
+
+### Overall .fam file
+
 An overall fam file is needed to include all participants (including siblings and parents).
 
-4. Phenotype files\
+### Phenotype files
+
 One file for each phenotype. Columns need to include FID, IID, phenotype values.
 
 ### Output
