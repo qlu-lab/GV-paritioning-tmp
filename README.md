@@ -60,14 +60,19 @@ One file for each phenotype. Columns need to include FID, IID, phenotype values.
 ### Output
 Estimation of all parameters and their variance estimations.
 
-## Step 1
+## GV-paritioning
+There are two steps to conduct the GV-paritioning analysis:
+
+### Step 1
 Generate GRM matrices for the whole dataset.\
 This can be done using PLINK2.0 (https://www.cog-genomics.org/plink/2.0/input#dosage_import_settings). If there are enough RAM and storage space in your machine, calculating GRM for each chromosome will save running time in step 2.
 
-## Step 2
+### Step 2
 Run GV-partitioning model.
 
-### Usage
+#### Example
+
+
 ```{r}
 Rscript ~./pipeline_GCsibling.r [fn_y1] [fn_y2] [grm_rel] [grm_rel.id] [fam file path] [map file directory] [dosage file directory] [output directory] [plink software path] [Total number of SNPs in GRM] [number of ind blocks]
 ```
