@@ -10,6 +10,7 @@ The software is developed using R and tested in Linux environments. The statisti
 
 * [data.table](https://cran.r-project.org/web/packages/data.table/index.html) (>=1.11.8)
 * [parallel](https://stat.ethz.ch/R-manual/R-devel/library/parallel/doc/parallel.pdf) (>=3.5.1)
+* [MASS](https://cran.r-project.org/web/packages/MASS/index.html) (>=7.3)
 
 ### Prepare following files
 
