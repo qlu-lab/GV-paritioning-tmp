@@ -12,6 +12,15 @@ The software is developed using R and tested in Linux environments. The statisti
 * [parallel](https://stat.ethz.ch/R-manual/R-devel/library/parallel/doc/parallel.pdf) (>=3.5.1)
 * [MASS](https://cran.r-project.org/web/packages/MASS/index.html) (>=7.3)
 
+## Download QUAIL
+
+You can download QUAIL by:
+
+```
+$ git clone https://github.com/qlu-lab/GV-paritioning
+$ cd ./GV-paritioning
+```
+
 ### Prepare following files
 
 1. Dosage files for sibling genotypes and parental genotypes\
