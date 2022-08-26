@@ -1,4 +1,4 @@
-# GV-paritioning: partitioning heritability and genetic covariance by direct and indirect paths
+# PARSEC (PARental Stratification of genetic Effect Components)
 
 ## Introduction
 
