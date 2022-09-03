@@ -70,10 +70,9 @@ F4	I4	160
 Estimation of all parameters and their variance estimations.
 
 ```
-F1	I1	0	0	0	-9
-F2	I2	0	0	0	-9
-F3	I3	0	0	0	-9
-F4	I4	0	0	0	-9
+est sd  p.value
+0.2 0.02  0.01
+0.1 0.02  0.5
 ...
 ...
 ```
