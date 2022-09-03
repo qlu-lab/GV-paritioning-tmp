@@ -67,7 +67,7 @@ F4	I4	160
 ```
 
 ### Output
-Estimation of all parameters and their variance estimations.
+Estimates of all parameters, standard error of estimates, and p-values..
 
 ```
 est sd  p.value
