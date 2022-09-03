@@ -57,8 +57,26 @@ F4	I4	0	0	0	-9
 
 One file for each phenotype. Columns need to include FID, IID, phenotype values.
 
+```
+F1	I1	145
+F2	I2	165
+F3	I3	180
+F4	I4	160
+...
+...
+```
+
 ### Output
 Estimation of all parameters and their variance estimations.
+
+```
+F1	I1	0	0	0	-9
+F2	I2	0	0	0	-9
+F3	I3	0	0	0	-9
+F4	I4	0	0	0	-9
+...
+...
+```
 
 ## PARSEC
 There are two steps to conduct the GV-paritioning analysis:
