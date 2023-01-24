@@ -127,7 +127,7 @@ An example is available in 'example' folder.
 ## Citation
 If anyone utilized this pipeline in the paper, please cite:
 
-Song J., Zou Y., Wu Y., Miao J., Yu Z., Fletcher J., Lu Q. (2023). [Decomposing heritability and genetic covariance by direct and indirect effect paths](https://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1010620). PLOS Genetics, 19(1): e1010620.
+Song J., Zou Y., Wu Y., Miao J., Yu Z., Fletcher J., Lu Q. (2023). [Decomposing heritability and genetic covariance by direct and indirect effect paths](https://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1010620). _PLOS Genetics_, 19(1): e1010620.
 
 ## License
 
